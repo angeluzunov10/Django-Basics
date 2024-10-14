@@ -1,7 +1,6 @@
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
-from forumApp.posts.forms import PostCreateForm, PostDeleteForm, SearchForm
+from forumApp.posts.forms import PostCreateForm, PostDeleteForm, SearchForm, PostEditForm
 from forumApp.posts.models import Post
 
 
@@ -14,7 +13,7 @@ def index(request):
         "my_form": '',
     }
 
-    return render(request, 'base.html', context=context)
+    return render(request, 'common/index.html', context=context)
 
 
 def dashboard(request):
@@ -76,5 +75,23 @@ def details_post(request, pk):
 
 
 def edit_post(request, pk):
-    return HttpResponse()
+    post = Post.objects.get(pk=pk)
+
+    if request.method == 'POST':
+        form = PostEditForm(request.POST, instance=post)
+
+        if form.is_valid():
+            form.save()
+            return redirect('dash')
+
+    else:
+        form = PostEditForm(instance=post)
+
+    context = {
+        'post': post,
+        'form': form,
+    }
+
+    return render(request, 'posts/edit-post.html', context)
+
 
