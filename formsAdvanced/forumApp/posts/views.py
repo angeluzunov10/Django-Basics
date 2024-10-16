@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 
-from forumApp.posts.forms import PostCreateForm, PostDeleteForm, SearchForm, PostEditForm
+from forumApp.posts.forms import PostCreateForm, PostDeleteForm, SearchForm, PostEditForm, CommentFormSet
 from forumApp.posts.models import Post
 
 
@@ -34,7 +34,7 @@ def dashboard(request):
 
 
 def add_post(request):
-    form = PostCreateForm(request.POST or None)
+    form = PostCreateForm(request.POST or None, request.FILES or None)
 
     if request.method == 'POST':
         if form.is_valid():
@@ -66,9 +66,21 @@ def delete_post(request, pk):
 
 def details_post(request, pk):
     post = Post.objects.get(pk=pk)
+    formset = CommentFormSet(request.POST or None)
+
+    if request.method == 'POST':
+        if formset.is_valid():
+            for form in formset:
+                if form.cleaned_data:
+                    comment = form.save(commit=False)
+                    comment.post = post
+                    comment.save()
+
+            return redirect('details-post', pk=post.id)
 
     context = {
-        'post': post
+        'post': post,
+        'formset': formset,
     }
 
     return render(request, 'posts/details-post.html', context)
