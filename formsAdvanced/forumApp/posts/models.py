@@ -8,7 +8,9 @@ from forumApp.posts.validators import BadLanguageValidator
 
 
 class Post(models.Model):
-    title = models.CharField(max_length=100)
+    TITLE_MAX_LENGTH = 100
+
+    title = models.CharField(max_length=TITLE_MAX_LENGTH)
 
     content = models.TextField(
         validators=[
