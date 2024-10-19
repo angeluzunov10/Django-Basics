@@ -6,9 +6,10 @@
         Hello user!
     </h1>
 
-    <form>
-        {{ my_form }}
-        {% csrf_token %}
-        <button>Submit</button>
-    </form>
+    <h1>
+        You are now logged in!
+    </h1>
+
+    {{ dynamic_info|time:'s' }}
+
 {% endblock %}
