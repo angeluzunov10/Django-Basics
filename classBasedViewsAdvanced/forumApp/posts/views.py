@@ -1,19 +1,21 @@
 from datetime import datetime
 
 from django.forms import modelform_factory
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views import View
+from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView, RedirectView, ListView, FormView, CreateView, DeleteView, UpdateView, \
     DetailView
 
-from forumApp.posts.forms import PostCreateForm, PostDeleteForm, SearchForm, PostEditForm, CommentFormSet
+from forumApp.decorators import measure_execution_time
+from forumApp.posts.forms import PostCreateForm, PostDeleteForm, SearchForm, CommentFormSet
+from forumApp.posts.mixins import TimeRestrictedMixin
 from forumApp.posts.models import Post
 
 
 # Create your views here.
 
-
+@method_decorator(measure_execution_time, name='dispatch')
 class IndexView(TemplateView):
     template_name = 'common/index.html'  # static way
     extra_context = {
@@ -34,14 +36,6 @@ class IndexView(TemplateView):
             return ['common/index.html']
 
 
-class Index(View):
-    def get(self, request, *args, **kwargs):
-        context = {
-            'dynamic_time': datetime.now(),
-        }
-        return render(request, 'common/index.html', context)
-
-
 # def index(request):
 #
 #     context = {
@@ -55,6 +49,7 @@ class DashboardView(ListView, FormView):
     template_name = 'posts/dashboard.html'
     context_object_name = 'posts'
     form_class = SearchForm
+    paginate_by = 6
     success_url = reverse_lazy('dash')
 
     model = Post
@@ -107,12 +102,20 @@ class AddPostView(CreateView):
 #     return render(request, 'posts/add-post.html', context)
 
 
+class PostDetailView(DetailView):
+    model = Post
+    template_name = 'posts/details-post.html'
 
-def details_post(request, pk):
-    post = Post.objects.get(pk=pk)
-    formset = CommentFormSet(request.POST or None)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['formset'] = CommentFormSet
+        return context
 
-    if request.method == 'POST':
+    def post(self, request, *args, **kwargs):
+        post = self.get_object()
+
+        formset = CommentFormSet(request.POST or None)
+
         if formset.is_valid():
             for form in formset:
                 if form.cleaned_data:
@@ -122,12 +125,31 @@ def details_post(request, pk):
 
             return redirect('details-post', pk=post.id)
 
-    context = {
-        'post': post,
-        'formset': formset,
-    }
+        context = self.get_context_data()
+        context['formset'] = formset
 
-    return render(request, 'posts/details-post.html', context)
+        return self.render_to_response(context)
+
+# def details_post(request, pk):
+#     post = Post.objects.get(pk=pk)
+#     formset = CommentFormSet(request.POST or None)
+#
+#     if request.method == 'POST':
+#         if formset.is_valid():
+#             for form in formset:
+#                 if form.cleaned_data:
+#                     comment = form.save(commit=False)
+#                     comment.post = post
+#                     comment.save()
+#
+#             return redirect('details-post', pk=post.id)
+#
+#     context = {
+#         'post': post,
+#         'formset': formset,
+#     }
+#
+#     return render(request, 'posts/details-post.html', context)
 
 
 class EditPostView(UpdateView):
