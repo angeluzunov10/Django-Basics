@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "albums.apps.AlbumsConfig",
     "profiles.apps.ProfilesConfig",
+    "common.apps.CommonConfig"
 ]
 
 MIDDLEWARE = [
@@ -124,7 +125,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = (
-    BASE_DIR / 'static/'
+    BASE_DIR / 'static/',
 )
 
 # Default primary key field type
