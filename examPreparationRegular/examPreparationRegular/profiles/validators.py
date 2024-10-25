@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError
+from django.utils.text import slugify
 from django.utils.deconstruct import deconstructible
 
 
@@ -19,5 +20,5 @@ class UsernameValidator:
             self.__message = value
 
     def __call__(self, value, *args, **kwargs):
-        if not value.isalnum():
+        if value.lower() != slugify(value):
             raise ValidationError(self.message)
