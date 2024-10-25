@@ -20,5 +20,5 @@ class UsernameValidator:
             self.__message = value
 
     def __call__(self, value, *args, **kwargs):
-        if value.lower() != slugify(value):
+        if '-' in value or value.lower() != slugify(value):
             raise ValidationError(self.message)
