@@ -1,9 +1,10 @@
 from django import forms
 
+from examPreparationRegular.mixins import PlaceholderMixin
 from profiles.models import Profile
 
 
-class ProfileBaseForm(forms.ModelForm):
+class ProfileBaseForm(PlaceholderMixin, forms.ModelForm):
     class Meta:
         model = Profile
         fields = '__all__'
