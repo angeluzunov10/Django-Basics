@@ -25,7 +25,18 @@ class AlbumEditView(UpdateView):
     success_url = reverse_lazy('home')
 
 
+class AlbumDeleteView(DeleteView):
+    model = Album
+    template_name = 'albums/album-delete.html'
+    pk_url_kwarg = 'id'
+    form_class = AlbumDeleteForm
+    success_url = reverse_lazy('home')
 
+    def get_initial(self):
+        return self.object.__dict__
+
+    def form_invalid(self, form):
+        return self.form_valid(form)
 
 
 class AlbumDetailsView(DetailView):
