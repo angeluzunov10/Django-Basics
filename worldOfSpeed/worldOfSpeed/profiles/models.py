@@ -16,7 +16,9 @@ class Profile(models.Model):
     email = models.EmailField()
 
     age = models.IntegerField(
-        MinValueValidator(21)
+        validators=[
+            MinValueValidator(21),
+        ]
     )
 
     password = models.CharField(
@@ -36,3 +38,14 @@ class Profile(models.Model):
     profile_picture = models.URLField(
         blank=True
     )
+
+    @property
+    def full_name(self):
+        if self.first_name and self.last_name:
+            return f'{self.first_name} {self.last_name}'
+        elif self.first_name:
+            return self.first_name
+        elif self.last_name:
+            return self.last_name
+        else:
+            return ''
