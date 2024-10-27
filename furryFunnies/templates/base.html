@@ -23,27 +23,31 @@
         <nav>
             {% get_user as author %}
             {% if author %}
-            <!-- If there is an author's profile -->
-            <div class="user">
-                <a href="{% url 'dashboard' %}">Dashboard</a>
-                <a href="{% url 'create-post' %}">New Post</a>
-                <a href="{% url 'details-author' %}">Author's Profile</a>
-            </div>
-            
+                <!-- If there is an author's profile -->
+                <div class="user">
+                    <a href="{% url 'dashboard' %}">Dashboard</a>
+                    <a href="{% url 'create-post' %}">New Post</a>
+                    <a href="{% url 'details-author' %}">Author's Profile</a>
+                </div>
+
             {% else %}
-            <!-- If author's profile has NOT been created -->
-            <div class="guest">
-                <a href="{% url 'create-author' %}">Create Author's Profile</a>
-            </div>
+                <!-- If author's profile has NOT been created -->
+                <div class="guest">
+                    <a href="{% url 'create-author' %}">Create Author's Profile</a>
+                </div>
             {% endif %}
         </nav>
     </header>
-    {% block content %}
-    {% endblock %}
+    <main>
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
 </div>
-    <!-- footer -->
-    <footer>
-        <p>&copy; 2024 FurryFunnies by SoftUni Team. All rights reserved.</p>
-    </footer>
+<!-- footer -->
+<footer>
+    <p>&copy; 2024 FurryFunnies by SoftUni Team. All rights reserved.</p>
+</footer>
 </body>
 </html>

@@ -1,18 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
-    <main>
-        <!-- Delete Post Form -->
-        <section id="edit">
-            <div class="form">
-                <h2>Delete Post</h2>
+    <!-- Delete Post Form -->
+    <section id="edit">
+        <div class="form">
+            <h2>Delete Post</h2>
 
-                <form class="edit-form" method="post" action="{% url 'delete-post' post.pk %}">
-                    {{ form }}
-                    {% csrf_token %}
-                    <!-- form button -->
-                    <button type="submit">Delete</button>
-                </form>
-            </div>
-        </section>
-    </main>
+            <form class="edit-form" method="post" action="{% url 'delete-post' post.pk %}">
+                {{ form }}
+                {% csrf_token %}
+                <!-- form button -->
+                <button type="submit">Delete</button>
+            </form>
+        </div>
+    </section>
 {% endblock %}
